@@ -16,4 +16,3 @@ services:
 
 networks:
   retarget_network:
-    driver: bridge
