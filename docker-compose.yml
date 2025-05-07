@@ -1,13 +1,14 @@
 version: '3.8'
 
 services:
-  nginx:
-    image: nginx:alpine
+  openresty:
+    image: openresty/openresty:alpine
     container_name: ReTargetOpenResty
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./logs:/var/log/nginx
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./logs:/usr/local/openresty/nginx/logs
       - /home/ubuntu/frontend_2025_1_RePresent/dist:/www-data
+      - ./lua-scripts:/usr/local/openresty/lua-scripts
     ports:
       - "80:80"
       - "443:443"
