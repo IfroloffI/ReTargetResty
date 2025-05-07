@@ -22,7 +22,12 @@ services:
       - ./certs:/etc/letsencrypt/live/${DOMAIN}
       - ./letsencrypt:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: sh -c "certbot certonly --webroot -w /var/www/certbot -d ${DOMAIN} -d www.${DOMAIN} --email ${EMAIL} --agree-tos --non-interactive --keep-until-expiring"
+    command: >
+      sh -c " if [ ! -f /etc/letsencrypt/live/re-target.ru/fullchain.pem ]; then
+        certbot certonly --webroot -w /var/www/certbot -d re-target.ru -d www.re-target.ru --email re-target-service@mail.ru --agree-tos --non-interactive --keep-until-expiring
+      else
+        echo 'Certificates already exist'
+      fi "
     networks:
       - retarget_network
 
