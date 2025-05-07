@@ -14,5 +14,6 @@ services:
     networks:
       - retarget_network
 
-networks:
-  retarget_network:
+retarget_network:
+  driver: bridge
+  name: retarget_network
