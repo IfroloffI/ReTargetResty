@@ -1,15 +1,13 @@
 .PHONY: deploy renew-certs stop clean git-pull-deploy
 
-DOMAIN = re-target.ru
-EMAIL = your@email.com
-
 deploy:
 	sudo mkdir -p {certs,letsencrypt,certbot/www,logs,lua-scripts}
-	sudo openssl dhparam -out ./certs/dhparam.pem 2048
+	sudo test -f ./certs/dhparam.pem || sudo openssl dhparam -out ./certs/dhparam.pem 2048
 	sudo docker-compose up -d --build
 
 renew-certs:
 	sudo docker-compose run --rm certbot renew --force-renewal
+	sudo docker-compose exec openresty nginx -s reload
 
 stop:
 	sudo docker-compose down
@@ -19,4 +17,5 @@ clean:
 	sudo rm -rf certs/* letsencrypt/* certbot/www/*
 
 git-pull-deploy:
-	sudo git pull && sudo make deploy
+	sudo git pull
+	$(MAKE) deploy
