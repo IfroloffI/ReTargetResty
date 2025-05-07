@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: ReTargetOpenResty
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./logs:/var/log/nginx
+      - /home/ubuntu/frontend_2025_1_RePresent/dist:/www-data
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - retarget_network
+    restart: unless-stopped
+
+networks:
+  retarget_network:
+    driver: bridge
+    name: retarget_network
