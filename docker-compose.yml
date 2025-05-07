@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   openresty:
-    image: openresty/openresty:bullseye
+    image: openresty/openresty:latest
     container_name: ReTargetOpenResty
     command: sh -c "groupadd -g 101 nginx && useradd -u 101 -g nginx nginx && nginx -g 'daemon off;'"
     volumes:
