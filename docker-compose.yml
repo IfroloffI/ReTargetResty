@@ -1,22 +1,27 @@
-version: '3.8'
-
 services:
   openresty:
     image: openresty/openresty:bookworm
-    container_name: ReTargetOpenResty
     volumes:
       - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
       - ./logs:/usr/local/openresty/nginx/logs
       - /home/ubuntu/frontend_2025_1_RePresent/dist:/www-data
       - ./lua-scripts:/usr/local/openresty/lua-scripts
+      - ./certs:/etc/ssl/certs
+      - ./letsencrypt:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
-    networks:
-      - retarget_network
     restart: unless-stopped
 
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certs:/etc/letsencrypt/live/${DOMAIN}
+      - ./letsencrypt:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: sh -c "certbot certonly --webroot -w /var/www/certbot -d ${DOMAIN} -d www.${DOMAIN} --email ${EMAIL} --agree-tos --non-interactive --keep-until-expiring"
+
 networks:
-  retarget_network:
-    driver: bridge
+  default:
     name: retarget_network
