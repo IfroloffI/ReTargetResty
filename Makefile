@@ -2,7 +2,7 @@
 
 deploy:
 	sudo git pull
-	docker compose up -d --build
+	docker compose build --no-cache && docker compose up -d
 
 hot-reload:
 	sudo git pull
