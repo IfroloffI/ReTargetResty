@@ -4,7 +4,6 @@ services:
   openresty:
     image: openresty/openresty:bookworm
     container_name: ReTargetOpenResty
-    command: sh -c "groupadd -g 101 nginx && useradd -u 101 -g nginx nginx && nginx -g 'daemon off;'"
     volumes:
       - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
       - ./logs:/usr/local/openresty/nginx/logs
