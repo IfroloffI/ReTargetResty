@@ -8,6 +8,7 @@ services:
       - /home/ubuntu/frontend_2025_1_RePresent/dist:/www-data
       - ./lua-scripts:/usr/local/openresty/lua-scripts
       - ./letsencrypt:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
@@ -21,7 +22,10 @@ services:
     volumes:
       - ./letsencrypt:/etc/letsencrypt
       - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - ./certbot/www:/var/www/certbot
     command: certonly --standalone --non-interactive --agree-tos --email re-target-service@mail.ru -d re-target.ru --keep-until-expiring
+    depends_on:
+      - openresty
     networks:
       - retarget_network
 
