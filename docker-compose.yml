@@ -22,8 +22,6 @@ services:
       - ./letsencrypt:/etc/letsencrypt
       - /var/lib/letsencrypt:/var/lib/letsencrypt
     command: certonly --standalone --non-interactive --agree-tos --email re-target-service@mail.ru -d re-target.ru --keep-until-expiring
-    depends_on:
-      - openresty
     networks:
       - retarget_network
 
