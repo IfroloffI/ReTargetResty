@@ -5,7 +5,7 @@ local random = math.random
 local time = ngx.time
 
 -- Конфигурация
-local SECRET_KEY = "Kp3s6v9y$B?E(H+MbQeThWmZq4t7w!z%C*F"
+local SECRET_KEY = "Kp3s6v9y$B?E(H+Mbt7w!z%C*FQeThWmZq4t7w!z%C*Fp3s6v9y$B?p3s6v9y$B?z%C*FQeThWmZq4t7"
 local TOKEN_TTL = 600 -- 10 минут
 
 local function generate_secure_path(link_id)
