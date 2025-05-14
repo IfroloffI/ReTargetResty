@@ -31,5 +31,4 @@ services:
 
 networks:
   retarget_network:
-    driver: bridge
-    name: retarget_network
+    external: true
