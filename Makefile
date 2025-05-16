@@ -4,8 +4,8 @@ get-certs:
 	sudo git pull
 	docker compose up -d --build certbot
 	sleep 15
-	docker compose stop certbot
-    docker compose rm -f certbot
+	docker stop certbot
+	docker rm -f certbot
 
 deploy:
 	sudo git pull
