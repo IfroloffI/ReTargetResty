@@ -15,6 +15,7 @@ services:
     restart: unless-stopped
     networks:
       - retarget_network
+    command: [ "/bin/bash", "-c", "luarocks install lua-cjson && exec /usr/local/openresty/bin/openresty -g 'daemon off;'" ]
 
   certbot:
     image: certbot/certbot
