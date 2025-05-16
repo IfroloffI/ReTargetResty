@@ -1,4 +1,3 @@
-local cjson = require "cjson"
 local cache = ngx.shared.avatar_cache
 
 if not cache then
@@ -10,7 +9,7 @@ if ngx.arg[2] ~= "" then
     return
 end
 
-if not ngx.ctx.should_cache or not ngx.ctx.cache_avatar or ngx.status ~= 200 then
+if not ngx.ctx.should_cache or ngx.status ~= 200 then
     return
 end
 
@@ -21,7 +20,7 @@ if not cache_key then
 end
 
 local content_type = ngx.header["Content-Type"] or ""
-if not content_type:match("^image/") then
+if not content_type:match("^image/(jpeg|png|gif)") then
     ngx.log(ngx.WARN, "Not caching non-image content: ", content_type)
     return
 end
@@ -32,19 +31,17 @@ if not data or #data == 0 then
     return
 end
 
-local etag = ngx.header["ETag"] or ngx.md5(data)
+if #data > 10 * 1024 * 1024 then
+    ngx.log(ngx.WARN, "Image too large for caching: ", #data, " bytes")
+    return
+end
 
-local to_cache = {
-    data = data,
-    content_type = content_type,
-    etag = etag,
-    timestamp = ngx.time()
-}
+local ok_data, err_data = cache:set(cache_key, data, 300)
+local ok_type, err_type = cache:set(cache_key .. "_content_type", content_type, 300)
 
-local ok, err = cache:set(cache_key, cjson.encode(to_cache), 300) -- TTL 5 минут
-if not ok then
-    ngx.log(ngx.ERR, "Failed to cache avatar: ", err)
+if not ok_data or not ok_type then
+    ngx.log(ngx.ERR, "Failed to cache avatar: ", err_data or err_type)
 else
-    ngx.log(ngx.NOTICE, "Successfully cached avatar for key: ", cache_key, " (", #data, " bytes)")
+    ngx.log(ngx.NOTICE, "Successfully cached avatar for key: ", cache_key, " (", #data, " bytes, ", content_type, ")")
     ngx.header["X-Cache-Status"] = "CACHED"
 end

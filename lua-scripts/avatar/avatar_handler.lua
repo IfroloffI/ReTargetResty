@@ -1,4 +1,3 @@
-local cjson = require "cjson"
 local cache = ngx.shared.avatar_cache
 
 if not cache then
@@ -17,21 +16,15 @@ local method = ngx.var.request_method
 
 -- Обработка GET запроса
 if method == "GET" then
-    local cached = cache:get(cache_key)
-    if cached then
-        cached = cjson.decode(cached)
-        local etag = ngx.var.http_if_none_match
-        if etag and etag == cached.etag then
-            ngx.header["X-Cache-Status"] = "HIT"
-            return ngx.exit(304)
-        end
+    local cached_data = cache:get(cache_key)
+    if cached_data then
+        local cached_type = cache:get(cache_key .. "_content_type") or "image/jpeg"
 
-        ngx.header["Content-Type"] = cached.content_type
-        ngx.header["ETag"] = cached.etag
+        ngx.header["Content-Type"] = cached_type
         ngx.header["Content-Disposition"] = "attachment; filename=avatar"
         ngx.header["Cache-Control"] = "public, max-age=300"
         ngx.header["X-Cache-Status"] = "HIT"
-        ngx.print(cached.data)
+        ngx.print(cached_data)
         return ngx.exit(200)
     end
 
