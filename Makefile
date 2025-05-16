@@ -6,7 +6,7 @@ get-certs:
 
 deploy:
 	sudo git pull
-	docker compose build --no-cache openresty && docker compose up -d openresty
+	docker compose up -d --build openresty
 
 hot-reload:
 	sudo git pull
