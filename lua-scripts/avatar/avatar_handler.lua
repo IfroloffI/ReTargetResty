@@ -21,6 +21,7 @@ if ngx.var.request_method == "GET" then
             local ok_decompress, img_data = pcall(zlib.inflate, zlib, data.data)
             if ok_decompress then
                 ngx.header["Content-Type"] = data.content_type
+                ngx.header["Content-Length"] = #img_data
                 ngx.print(img_data)
                 return ngx.exit(200)
             else
