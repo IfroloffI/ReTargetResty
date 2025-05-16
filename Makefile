@@ -1,8 +1,11 @@
-.PHONY: get-certs deploy hot-reload
+.PHONY: get-certs deploy hot-reload renew-certs
 
 get-certs:
 	sudo git pull
 	docker compose up -d --build certbot
+	sleep 15
+	docker compose stop certbot
+    docker compose rm -f certbot
 
 deploy:
 	sudo git pull
@@ -11,3 +14,11 @@ deploy:
 hot-reload:
 	sudo git pull
 	docker exec -it ReTargetOpenResty nginx -s reload
+
+renew-certs:
+    docker compose stop openresty
+    docker compose up -d certbot
+    sleep 15
+    docker compose stop certbot
+    docker compose rm -f certbot
+    docker compose up -d openresty
