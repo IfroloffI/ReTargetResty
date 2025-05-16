@@ -7,27 +7,24 @@ services:
       - ./logs:/usr/local/openresty/nginx/logs
       - /home/ubuntu/frontend_2025_1_RePresent/dist:/www-data
       - ./lua-scripts:/usr/local/openresty/lua-scripts
-      - ./letsencrypt:/etc/letsencrypt
+      - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
     restart: unless-stopped
+    depends_on:
+      - certbot
     networks:
       - retarget_network
 
   certbot:
     image: certbot/certbot
-    container_name: ReTargetCertbot
+    container_name: certbot
     volumes:
-      - ./letsencrypt:/etc/letsencrypt
-      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --standalone --non-interactive --agree-tos --email re-target-service@mail.ru -d re-target.ru --keep-until-expiring
-    depends_on:
-      - openresty
-    networks:
-      - retarget_network
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email re-target-service@mail.ru -d re-target.ru --agree-tos
 
 networks:
   retarget_network:
