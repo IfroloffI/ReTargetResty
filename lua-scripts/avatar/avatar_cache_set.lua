@@ -41,5 +41,5 @@ if not ok then
     ngx.log(ngx.ERR, "Failed to cache avatar: ", err)
 else
     ngx.log(ngx.NOTICE, "Successfully cached avatar for key: ", cache_key, " (", #data, " bytes)")
-    ngx.header["X-Cache-Status"] = "STORE"
+    ngx.header["X-Cache-Status"] = "CACHED"
 end

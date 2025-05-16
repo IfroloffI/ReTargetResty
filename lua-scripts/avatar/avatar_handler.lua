@@ -32,7 +32,7 @@ if method == "GET" then
         ngx.header["ETag"] = cached.etag
         ngx.header["Content-Disposition"] = "attachment; filename=avatar"
         ngx.header["Cache-Control"] = "public, max-age=300"
-        ngx.header["X-Cache-Status"] = "HIT"
+        ngx.header["X-Cache-Status"] = "GFC"
         ngx.print(cached.data)
         return ngx.exit(200)
     end
@@ -45,6 +45,7 @@ end
 -- Обработка PUT запроса
 if method == "PUT" then
     cache:delete(cache_key)
+    ngx.header["X-Cache-Status"] = "DFC"
     ngx.log(ngx.NOTICE, "Purged avatar cache for: ", cache_key)
     return
 end
