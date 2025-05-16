@@ -1,12 +1,24 @@
 local cjson = require "cjson"
+local cache = ngx.shared.avatar_cache
 
-if not ngx.ctx.should_cache or ngx.arg[2] ~= "" then
+if not cache then
+    ngx.log(ngx.ERR, "Avatar cache not initialized in body filter")
     return
 end
 
-local cache = ngx.shared.avatar_cache
+if ngx.arg[2] ~= "" then
+    return
+end
+
+if not ngx.ctx.cache_avatar or ngx.status ~= 200 then
+    return
+end
+
 local cache_key = ngx.ctx.cache_key
-local resp_data = ngx.arg[1]
+if not cache_key then
+    ngx.log(ngx.ERR, "No cache_key in ctx in body filter")
+    return
+end
 
 local content_type = ngx.header["Content-Type"] or ""
 if not content_type:match("^image/") then
@@ -14,16 +26,20 @@ if not content_type:match("^image/") then
     return
 end
 
+local data = ngx.arg[1]
+local etag = ngx.header["ETag"] or ngx.md5(data)
+
 local to_cache = {
-    data = resp_data,
+    data = data,
     content_type = content_type,
-    etag = ngx.header["ETag"] or ngx.md5(resp_data),
+    etag = etag,
     timestamp = ngx.time()
 }
 
-local success, err = cache:set(cache_key, cjson.encode(to_cache), 300)
-if not success then
+local ok, err = cache:set(cache_key, cjson.encode(to_cache), 300) -- TTL 5 минут
+if not ok then
     ngx.log(ngx.ERR, "Failed to cache avatar: ", err)
 else
-    ngx.log(ngx.NOTICE, "Successfully cached avatar for key: ", cache_key, " Content-Type: ", content_type)
+    ngx.log(ngx.NOTICE, "Successfully cached avatar for key: ", cache_key, " (", #data, " bytes)")
+    ngx.header["X-Cache-Status"] = "STORE"
 end

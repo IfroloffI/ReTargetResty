@@ -18,24 +18,27 @@ local method = ngx.var.request_method
 -- Обработка GET запроса
 if method == "GET" then
     local args = ngx.req.get_uri_args()
-    if args.download then
-        local cached = cache:get(cache_key)
-        if cached then
-            cached = cjson.decode(cached)
-            local etag = ngx.var.http_if_none_match
-            if etag and etag == cached.etag then
-                return ngx.exit(304)
-            end
-            ngx.header["Content-Type"] = cached.content_type
-            ngx.header["ETag"] = cached.etag
-            ngx.header["Cache-Control"] = "public, max-age=300"
-            ngx.print(cached.data)
-            return ngx.exit(200)
+
+    local cached = cache:get(cache_key)
+    if cached then
+        cached = cjson.decode(cached)
+        local etag = ngx.var.http_if_none_match
+        if etag and etag == cached.etag then
+            ngx.header["X-Cache-Status"] = "HIT"
+            return ngx.exit(304)
         end
 
-        ngx.ctx.cache_key = cache_key
-        ngx.ctx.should_cache = true
+        ngx.header["Content-Type"] = cached.content_type
+        ngx.header["ETag"] = cached.etag
+        ngx.header["Content-Disposition"] = "attachment; filename=avatar"
+        ngx.header["Cache-Control"] = "public, max-age=300"
+        ngx.header["X-Cache-Status"] = "HIT"
+        ngx.print(cached.data)
+        return ngx.exit(200)
     end
+
+    ngx.ctx.cache_key = cache_key
+    ngx.ctx.should_cache = true
     return
 end
 
