@@ -1,9 +1,11 @@
-.PHONY: get-certs deploy hot-reload renew-certs
+.PHONY: get-certs del-certbot deploy hot-reload renew-certs
 
 get-certs:
 	sudo git pull
 	docker compose up -d --build certbot
 	sleep 15
+
+del-certbot:
 	docker stop certbot
 	docker rm -f certbot
 
