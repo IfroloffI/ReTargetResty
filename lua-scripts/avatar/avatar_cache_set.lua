@@ -10,7 +10,7 @@ if ngx.arg[2] ~= "" then
     return
 end
 
-if not ngx.ctx.cache_avatar or ngx.status ~= 200 then
+if not ngx.ctx.should_cache or not ngx.ctx.cache_avatar or ngx.status ~= 200 then
     return
 end
 
@@ -27,6 +27,11 @@ if not content_type:match("^image/") then
 end
 
 local data = ngx.arg[1]
+if not data or #data == 0 then
+    ngx.log(ngx.WARN, "Empty response body, not caching")
+    return
+end
+
 local etag = ngx.header["ETag"] or ngx.md5(data)
 
 local to_cache = {

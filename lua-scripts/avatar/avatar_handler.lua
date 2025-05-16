@@ -17,8 +17,6 @@ local method = ngx.var.request_method
 
 -- Обработка GET запроса
 if method == "GET" then
-    local args = ngx.req.get_uri_args()
-
     local cached = cache:get(cache_key)
     if cached then
         cached = cjson.decode(cached)
@@ -32,20 +30,21 @@ if method == "GET" then
         ngx.header["ETag"] = cached.etag
         ngx.header["Content-Disposition"] = "attachment; filename=avatar"
         ngx.header["Cache-Control"] = "public, max-age=300"
-        ngx.header["X-Cache-Status"] = "GFC"
+        ngx.header["X-Cache-Status"] = "HIT"
         ngx.print(cached.data)
         return ngx.exit(200)
     end
 
     ngx.ctx.cache_key = cache_key
     ngx.ctx.should_cache = true
+    ngx.header["X-Cache-Status"] = "MISS"
     return
 end
 
 -- Обработка PUT запроса
 if method == "PUT" then
     cache:delete(cache_key)
-    ngx.header["X-Cache-Status"] = "DFC"
+    ngx.header["X-Cache-Status"] = "PURGED"
     ngx.log(ngx.NOTICE, "Purged avatar cache for: ", cache_key)
     return
 end
