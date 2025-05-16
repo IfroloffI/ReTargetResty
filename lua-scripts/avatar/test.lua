@@ -1,1 +1,1 @@
-return 418
+return ngx.exit(418)
