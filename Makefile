@@ -16,9 +16,9 @@ hot-reload:
 	docker exec -it ReTargetOpenResty nginx -s reload
 
 renew-certs:
-    docker compose stop openresty
-    docker compose up -d certbot
-    sleep 15
-    docker compose stop certbot
-    docker compose rm -f certbot
-    docker compose up -d openresty
+	docker compose stop openresty
+	docker compose up -d certbot
+	sleep 15
+	docker compose stop certbot
+	docker compose rm -f certbot
+	docker compose up -d openresty
