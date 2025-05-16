@@ -17,6 +17,7 @@ hot-reload:
 
 renew-certs:
 	docker compose stop openresty
+	docker rm -f openresty
 	docker compose up -d certbot
 	sleep 15
 	docker compose stop certbot
