@@ -13,6 +13,7 @@ deploy:
 
 hot-reload:
 	sudo git pull
+	docker cp ./nginx.conf ReTargetOpenResty:/usr/local/openresty/nginx/conf/
 	docker exec -it ReTargetOpenResty nginx -s reload
 
 renew-certs:
