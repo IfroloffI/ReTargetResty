@@ -13,9 +13,8 @@ deploy:
 
 hot-reload:
 	sudo git pull
-	docker exec -it ReTargetOpenResty bash -c "cp /usr/local/openresty/nginx/conf/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf.backup"
-	docker exec -it ReTargetOpenResty bash -c "cat > /usr/local/openresty/nginx/conf/nginx.conf" <./nginx.conf
-	docker exec -it ReTargetOpenResty nginx -s reload
+	docker cp./nginx.conf ReTargetOpenResty:/usr/local/openresty/nginx/conf/nginx.conf
+	docker exec ReTargetOpenResty nginx -s reload
 
 renew-certs:
 	docker compose stop openresty
