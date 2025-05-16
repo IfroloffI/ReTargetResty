@@ -12,10 +12,11 @@ if ngx.var.request_method == "GET" then
     local cached = cache:get(cache_key)
     if cached then
         cache:set(cache_key, cached, 300)
+        ngx.header["Content-Type"] = "image/jpeg"
         ngx.print(cached)
         ngx.exit(200)
     else
-        local res = ngx.location.capture("/internal-avatar/", {
+        local res = ngx.location.capture("/internal-avatar", {
             method = ngx.HTTP_GET,
             args = ngx.req.get_uri_args()
         })
