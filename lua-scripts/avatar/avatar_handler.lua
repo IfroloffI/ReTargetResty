@@ -3,7 +3,7 @@ local cache = ngx.shared.avatar_cache
 
 local session_id = ngx.var.cookie_session_id
 if not session_id then
-    return ngx.exit(401)
+    ngx.exit(401)
 end
 
 local cache_key = "avatar_" .. ngx.md5(session_id)
@@ -14,19 +14,22 @@ if ngx.var.request_method == "GET" then
         ngx.print(zlib.inflate()(cached))
         return ngx.exit(200)
     end
+
+    ngx.req.read_body()
+    local res = ngx.location.capture("/api/v1/avatar")
+
+    if res.status == 200 then
+        cache:set(cache_key, zlib.deflate()(res.body), 300) -- 5 мин
+    end
+
+    ngx.status = res.status
+    ngx.print(res.body)
+    return
 end
 
 if ngx.var.request_method == "PUT" then
     cache:delete(cache_key)
-    return
+    ngx.exit(200)
 end
 
-ngx.req.read_body()
-local res = ngx.location.capture("/proxy_pass")
-
-if ngx.var.request_method == "GET" and res.status == 200 then
-    cache:set(cache_key, zlib.deflate()(res.body), 300)
-end
-
-ngx.status = res.status
-ngx.print(res.body)
+ngx.exit(405)
