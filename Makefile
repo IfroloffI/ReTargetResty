@@ -12,11 +12,9 @@ deploy:
 	docker compose up -d --build openresty
 
 hot-reload:
-	sudo git pull
-	docker stop ReTargetOpenResty
-	docker cp ./nginx.conf ReTargetOpenResty:/usr/local/openresty/nginx/conf/nginx.conf
-	docker start ReTargetOpenResty
-	docker exec ReTargetOpenResty nginx -s reload
+    git pull
+    docker compose stop openresty
+    docker compose up -d --build openresty
 
 renew-certs:
 	docker compose stop openresty
