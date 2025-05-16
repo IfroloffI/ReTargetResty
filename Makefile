@@ -12,9 +12,9 @@ deploy:
 	docker compose up -d --build openresty
 
 hot-reload:
-    git pull
-    docker compose stop openresty
-    docker compose up -d --build openresty
+	git pull
+	docker compose stop openresty
+	docker compose up -d --build openresty
 
 renew-certs:
 	docker compose stop openresty
