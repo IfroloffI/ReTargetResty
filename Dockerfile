@@ -5,5 +5,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN luarocks install lua-cjson
+RUN luarocks install lua-zlib
 
 COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
