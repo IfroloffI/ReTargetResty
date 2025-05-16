@@ -15,6 +15,8 @@ if ngx.var.request_method == "GET" then
         ngx.print(cached)
         ngx.exit(200)
     end
-elseif ngx.var.request_method == "PUT" then
+end
+if ngx.var.request_method == "PUT" then
     cache:delete(cache_key)
     ngx.exit(200)
+end
