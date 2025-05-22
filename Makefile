@@ -18,6 +18,10 @@ hot-reload:
 	docker compose stop openresty
 	docker compose up -d --build openresty
 
+hhr:
+	sudo git pull
+	docker exec -it ReTargetOpenResty nginx -s reload
+
 renew-certs:
 	docker compose stop openresty
 	docker rm -f openresty
