@@ -1,4 +1,4 @@
-.PHONY: get-certs del-certbot deploy hot-reload renew-certs
+.PHONY: get-certs del-certbot deploy hot-reload hhr renew-certs
 
 get-certs:
 	sudo git pull
