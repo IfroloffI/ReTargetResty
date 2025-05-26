@@ -6,7 +6,7 @@ services:
     volumes:
       - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
       - ./logs:/usr/local/openresty/nginx/logs
-      - /home/ubuntu/frontend_2025_1_RePresent/dist:/www-data
+      - /home/retarget/frontend_2025_1_RePresent/dist:/www-data
       - ./lua-scripts:/usr/local/openresty/lua-scripts
       - /etc/letsencrypt:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
