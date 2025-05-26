@@ -25,7 +25,7 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --standalone -w /var/www/certbot --force-renewal --email re-target-service@mail.ru -d re-target.ru --agree-tos
+    command: certonly --standalone -w /var/www/certbot --force-renewal --email re-target-service@mail.ru -d re-target.ru -d test.re-target.ru --agree-tos
     network_mode: host
 
 networks:
